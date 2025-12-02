@@ -2,23 +2,42 @@ import React from 'react';
 import { FcGoogle } from 'react-icons/fc';
 import useAuth from '../../../hooks/useAuth';
 import { useLocation, useNavigate } from 'react-router';
+import useAxiosSecure from '../../../hooks/useAxiosSecure';
 
 const SocialLogin = () => {
+
+  const axiosSecure = useAxiosSecure() ;
 
     const {signInGoogle} = useAuth() ;
       const navigate = useNavigate();
   const location = useLocation();
 
-    const handleGoogleSignIn = () => {
-         signInGoogle()
-         .then(result => {
-            console.log(result.user)
-            navigate(`${location.state ? location.state : "/"}`);
-        })
-         .catch(error => {
-            console.log(error)
-         })
+   const handleGoogleSignIn = () => {
+        signInGoogle()
+            .then(result => {
+                console.log(result.user);
+                
+
+                // create user in the database
+                const userInfo = {
+                    email: result.user.email,
+                    displayName: result.user.displayName,
+                    photoURL: result.user.photoURL
+                }
+
+                axiosSecure.post('/users', userInfo)
+                    .then(res => {
+                        console.log('user data has been stored', res.data)
+                        navigate(location.state || '/');
+                    })
+
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
+
+    
     return (
         <div>
             <div className="divider">OR</div>

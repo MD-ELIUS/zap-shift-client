@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, NavLink, Outlet } from 'react-router';
 import { LiaCubeSolid, LiaCubesSolid } from "react-icons/lia";
+import { MdPayment } from 'react-icons/md';
 
 const DashboardLayout = () => {
     return (
@@ -38,6 +39,10 @@ const DashboardLayout = () => {
         <li>
            <NavLink className='activeClass'  to='/dashboard/my-parcels'> <LiaCubeSolid size={20} /> 
            <span className="is-drawer-close:hidden"> My Parcels</span></NavLink>
+        </li>
+        <li>
+           <NavLink className='activeClass'  to='/dashboard/payment-history'> <MdPayment size={20} /> 
+           <span className="is-drawer-close:hidden"> Payment History </span></NavLink>
         </li>
 
         {/* List item */}

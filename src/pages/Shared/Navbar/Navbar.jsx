@@ -11,6 +11,7 @@ const Navbar = () => {
         <li><NavLink to="/">About Us</NavLink></li>
         <li><NavLink to="/send-parcel">Send Parcel</NavLink></li>
         <li><NavLink to="/coverage">Coverage</NavLink></li>
+        <li><NavLink to='/rider'>Be a Rider</NavLink></li>
 
         {
             user && <>
@@ -50,10 +51,10 @@ const Navbar = () => {
             </div>
             <div className="navbar-end">
                {
-                user ?  <a onClick={handleLogOut} className="btn">Log out</a> : 
-                 <Link to='/login' className="btn ">Login</Link>
+                user ?  <a onClick={handleLogOut} className="btn">Sign Out</a> : 
+                 <Link to='/login' className="btn ">Sign In</Link>
                }
-                <Link to='/rider' className="btn btn-primary text-black mx-4">Be a Rider</Link>
+                <Link to='/register' className="btn btn-primary text-black mx-4">Sign Up</Link>
             </div>
         </div>
     );

@@ -4,6 +4,7 @@ import useAuth from '../../hooks/useAuth';
 import SocialLogin from './SocialLogin/SocialLogin';
 import { useLocation, useNavigate } from 'react-router';
 import axios from 'axios';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 
 const Register = () => {
@@ -11,6 +12,7 @@ const Register = () => {
     const {registerUser,  updateUserProfile} = useAuth() ;
     const [ error, setError ] = useState(null) ;
       const navigate = useNavigate();
+      const axiosSecure = useAxiosSecure() ;
           
   const location = useLocation();
 
@@ -35,11 +37,30 @@ const Register = () => {
      .then(res => {
         console.log('after image upload', res)
 
+ 
+        const photoURL = res.data.data.url ;
+
+
+        // Create users in the Database
+        const userInfo = {
+          email: data.email,
+          name: data.name,
+          photoURL: photoURL,
+          
+        }
+          axiosSecure.post('/users', userInfo)
+          .then(res => {
+           
+            if(res.data.insertedId) {
+               console.log('new user created in db', res.data)
+            }
+          })
+
         //3. update the Profile to firebase
 
         const userProfile = {
             displayName: data.name,
-            photoURL: res.data.data.url
+            photoURL: photoURL
         }
 
          //4. Update User Profile
