@@ -107,7 +107,7 @@ console.log(user)
                 <div className=' flex gap-1 items-center'>
                   <span className='text-yellow-500'>Pending</span>
                   {/* <Link to={`/dashboard/payment/${parcel._id}`} className='btn btn-primary btn-sm'>Pay</Link> */}
-                   <button onClick={() => handlePayment(parcel)} className='btn btn-primary btn-sm'>Pay</button>
+                   <button onClick={() => handlePayment(parcel)} className='btn btn-primary btn-sm text-black'>Pay</button>
                 </div>
                
             }
