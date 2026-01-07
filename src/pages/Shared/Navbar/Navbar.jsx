@@ -36,22 +36,23 @@ const Navbar = () => {
     </Link>
   </div>
 
-  {/* Menu button center on small screens */}
-  <div className="navbar-center lg:hidden absolute left-1/2 transform -translate-x-1/2">
-    <div className="dropdown">
-      <div tabIndex={0} role="button" className="btn btn-ghost">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </div>
-      <ul
-        tabIndex={0}
-        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-10 mt-3 w-52 p-2 shadow"
-      >
-        {links}
-      </ul>
+{/* Menu button center on small screens */}
+<div className="navbar-center lg:hidden relative">
+  <div className="dropdown relative z-50">
+    <div tabIndex={0} role="button" className="btn btn-ghost">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
     </div>
+    <ul
+      tabIndex={0}
+      className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow z-50"
+    >
+      {links}
+    </ul>
   </div>
+</div>
+
 
   {/* Menu links for large screens */}
   <div className="navbar-center hidden lg:flex">
