@@ -80,7 +80,7 @@ const Rider = () => {
                         {/* Rider Name */}
                         <fieldset className="fieldset mt-4">
                             <label className="label">Rider name</label>
-                            <input type="text" className="input w-full" {...register('riderName')} placeholder="Rider Name" />
+                            <input type="text" className="input w-full" {...register('riderName')} readOnly value={user?.displayName} placeholder="Rider Name" />
                         </fieldset>
 
 

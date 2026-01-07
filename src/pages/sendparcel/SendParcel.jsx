@@ -129,7 +129,7 @@ const SendParcel = () => {
                         {/* Sender Name */}
                         <fieldset className="fieldset mt-4">
                             <label className="label">Sender name</label>
-                            <input type="text" className="input w-full" {...register('senderName')} placeholder="Sender Name" />
+                            <input type="text" className="input w-full" {...register('senderName')} readOnly value={user?.displayName} placeholder="Sender Name" />
                         </fieldset>
                         {/* Sender Email */}
                         <fieldset className="fieldset mt-4">
