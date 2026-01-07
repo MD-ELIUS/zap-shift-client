@@ -26,7 +26,7 @@ const cardData = [
 
 const HowItWorks = () => {
   return (
-    <section className="max-w-7xl mx-auto px-4 py-12">
+    <section className="max-w-7xl mx-auto  py-12">
       {/* Section Title */}
       <h2 className="text-2xl md:text-3xl font-semibold text-secondary mb-8">
         How it Works

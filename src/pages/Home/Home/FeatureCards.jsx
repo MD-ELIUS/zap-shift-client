@@ -25,8 +25,8 @@ const cardData = [
 
 const FeatureCards = () => {
   return (
-    <section className="py-8 ">
-      <div className="max-w-7xl mx-auto px-4 flex flex-col gap-6">
+    <section className="py-8 max-w-7xl mx-auto">
+      <div className="  flex flex-col gap-6">
         {cardData.map((card, index) => (
           <div
             key={index}

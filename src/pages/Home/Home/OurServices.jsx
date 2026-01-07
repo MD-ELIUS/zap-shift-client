@@ -37,7 +37,7 @@ const servicesData = [
 const OurServices = () => {
   return (
     // p-16 কে পরিবর্তন করে রেসপন্সিভ প্যাডিং দেওয়া হয়েছে
-    <section className="bg-secondary py-12 px-6 md:py-20 md:px-16 lg:px-24 rounded-2xl md:rounded-3xl">
+    <section className="max-w-7xl mx-auto bg-secondary py-12 px-6 md:py-20 md:px-16 lg:px-24 rounded-2xl md:rounded-3xl">
       {/* Section Title */}
       <div className="text-center mb-10 md:mb-16">
         <h2 className="text-3xl md:text-5xl font-bold text-white">Our Services</h2>

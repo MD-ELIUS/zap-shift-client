@@ -6,6 +6,7 @@ import HowItWorks from '../HowItWorks';
 import OurServices from './OurServices';
 import FeatureCards from './FeatureCards';
 import FAQSection from './FAQSection';
+import MerchantSection from './MerchantSection';
 
 
 const reviewsPromise = fetch('/reviews.json').then(res => res.json())
@@ -24,6 +25,7 @@ const Home = () => {
   <div className="w-[80%] border-t-2 border-dashed border-gray-300"></div>
 </div>
             <FeatureCards></FeatureCards>
+            <MerchantSection></MerchantSection>
             <Reviews reviewsPromise={reviewsPromise}></Reviews>
             <FAQSection></FAQSection>
         </div>

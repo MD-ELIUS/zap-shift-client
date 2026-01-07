@@ -12,15 +12,15 @@ const Reviews = ({ reviewsPromise }) => {
   const reviews = use(reviewsPromise);
 
   return (
-    <section className="py-12 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="py-12 max-w-7xl mx-auto overflow-hidden">
+      <div className="max-w-7xl mx-auto">
 
         {/* ===== Title Section (NEW) ===== */}
         <div className="text-center mb-10">
           <img
             src={reviewTitleImg}
             alt="reviews"
-            className="mx-auto mb-4 h-12 sm:h-16 object-contain"
+            className="mx-auto mb-4 h-20 sm:h-30 object-contain"
           />
 
           <h2 className="text-2xl sm:text-3xl font-semibold text-secondary mb-3">
