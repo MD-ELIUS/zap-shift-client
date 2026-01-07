@@ -25,3 +25,13 @@ body {
 .activeClass.active {
   @apply bg-primary
 }
+
+/* স্লাইডারের সব স্লাইডকে সমান উচ্চতা নিশ্চিত করার জন্য */
+.swiper-wrapper {
+  display: flex;
+}
+
+.swiper-slide {
+  height: auto !important; /* স্লাইডকে কন্টেন্ট অনুযায়ী লম্বা হতে দিবে */
+  display: flex;
+}

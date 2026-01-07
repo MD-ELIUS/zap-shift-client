@@ -17,7 +17,7 @@
     "userName": "Jane Smith",
     "delivery_email": "delivery2@example.com",
     "ratings": 3.8,
-    "review": "Took a bit longer than expected, but okay overall.",
+    "review": "Took longer time but overall good.",
     "parcel_id": "5f47ac10b4f1c03e8c765432",
     "pick_up_email": "pickup2@example.com",
     "user_photoURL": "https://randomuser.me/api/portraits/women/25.jpg",
