@@ -36,29 +36,37 @@ const servicesData = [
 
 const OurServices = () => {
   return (
-    <section className="bg-secondary p-16 rounded-xl">
+    // p-16 কে পরিবর্তন করে রেসপন্সিভ প্যাডিং দেওয়া হয়েছে
+    <section className="bg-secondary py-12 px-6 md:py-20 md:px-16 lg:px-24 rounded-2xl md:rounded-3xl">
       {/* Section Title */}
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-white">Our Services</h2>
-        <p className="text-white text-opacity-70 mt-2 text-sm md:text-base">
+      <div className="text-center mb-10 md:mb-16">
+        <h2 className="text-3xl md:text-5xl font-bold text-white">Our Services</h2>
+        <p className="text-white text-opacity-80 mt-3 text-sm md:text-lg max-w-2xl mx-auto">
           Explore the wide range of services we offer for individuals and businesses
         </p>
       </div>
 
       {/* Services Cards */}
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {servicesData.map((service, index) => (
-          <div key={index} className="bg-white hover:bg-primary transition-all rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-            {/* Icon */}
-            <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mb-4">
+          <div 
+            key={index} 
+            className="group bg-white hover:bg-orange-50 transition-all duration-300 rounded-2xl shadow-lg p-8 flex flex-col items-center text-center border border-transparent hover:border-white/20"
+          >
+            {/* Icon Container */}
+            <div className="bg-gray-100 rounded-2xl w-16 h-16 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
               {service.icon}
             </div>
 
             {/* Title */}
-            <h3 className="text-secondary font-semibold text-lg mb-2">{service.title}</h3>
+            <h3 className="text-secondary font-bold text-xl mb-3 leading-tight">
+                {service.title}
+            </h3>
 
             {/* Description */}
-            <p className="text-gray-600 text-sm">{service.description}</p>
+            <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+                {service.description}
+            </p>
           </div>
         ))}
       </div>
