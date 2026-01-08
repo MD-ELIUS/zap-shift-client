@@ -21,6 +21,7 @@ import AssignRiders from "../pages/dashboard/AssignRiders/AssignRiders";
 import AssignedDeliveries from "../pages/dashboard/AssignedDeliveries/AssignedDeliveries";
 import CompletedDeliveries from "../pages/dashboard/CompletedDeliveries/CompletedDeliveries";
 import ParcelTrack from "../pages/ParcelTrack/ParcelTrack";
+import AboutUs from "../pages/AboutUs";
 
 
 
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         Component: Home
+      },
+      {
+        path: "/about",
+        Component: AboutUs,
       },
       {
         path: '/coverage',

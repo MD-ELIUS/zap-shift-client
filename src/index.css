@@ -35,3 +35,11 @@ body {
   height: auto !important; /* স্লাইডকে কন্টেন্ট অনুযায়ী লম্বা হতে দিবে */
   display: flex;
 }
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
