@@ -66,7 +66,7 @@ const Login = () => {
                     {errors.password?.type === 'minLength' && (
                         <p className="text-red-500">Password must be 6 characters or longer</p>
                     )}
-                    <p className="text-black hover:text-primary underline mt-1 cursor-pointer w-fit">Forgot password?</p>
+                    <Link to="/forgot-password" className="text-black hover:text-primary underline mt-1 cursor-pointer w-fit">Forgot password?</Link>
                 </div>
 
                 {/* Login Button */}

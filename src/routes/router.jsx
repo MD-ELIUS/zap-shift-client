@@ -22,6 +22,7 @@ import AssignedDeliveries from "../pages/dashboard/AssignedDeliveries/AssignedDe
 import CompletedDeliveries from "../pages/dashboard/CompletedDeliveries/CompletedDeliveries";
 import ParcelTrack from "../pages/ParcelTrack/ParcelTrack";
 import AboutUs from "../pages/AboutUs";
+import ForgotPassword from "../pages/Auth/ForgotPassword";
 
 
 
@@ -72,6 +73,10 @@ export const router = createBrowserRouter([
       {
         path: '/register',
         Component: Register
+      },
+      {
+        path: 'forgot-password',
+        Component: ForgotPassword,
       }
     ]
   },
