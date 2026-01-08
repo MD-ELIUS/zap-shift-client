@@ -9,14 +9,87 @@ const Navbar = () => {
     console.log(user);
 
     const links = <>
-        <li><NavLink to="/">Services</NavLink></li>
-        <li><NavLink to="/about">About Us</NavLink></li>
-        <li><NavLink to="/send-parcel">Send Parcel</NavLink></li>
-        <li><NavLink to="/coverage">Coverage</NavLink></li>
-        <li><NavLink to='/rider'>Be a Rider</NavLink></li>
+  <li>
+    <NavLink
+      to="/"
+      className={({ isActive }) =>
+        isActive
+          ? "px-4 py-2 rounded-2xl bg-primary text-black font-semibold"
+          : "px-4 py-2 rounded-2xl hover:bg-base-200"
+      }
+    >
+      Services
+    </NavLink>
+  </li>
 
-        {user && <li><NavLink to="/dashboard/my-parcels">My Parcels</NavLink></li>}
-    </>
+  <li>
+    <NavLink
+      to="/about"
+      className={({ isActive }) =>
+        isActive
+          ? "px-4 py-2 rounded-2xl bg-primary text-black font-semibold"
+          : "px-4 py-2 rounded-2xl hover:bg-base-200"
+      }
+    >
+      About Us
+    </NavLink>
+  </li>
+
+  <li>
+    <NavLink
+      to="/send-parcel"
+      className={({ isActive }) =>
+        isActive
+          ? "px-4 py-2 rounded-2xl bg-primary text-black font-semibold"
+          : "px-4 py-2 rounded-2xl hover:bg-base-200"
+      }
+    >
+      Send Parcel
+    </NavLink>
+  </li>
+
+  <li>
+    <NavLink
+      to="/coverage"
+      className={({ isActive }) =>
+        isActive
+          ? "px-4 py-2 rounded-2xl bg-primary text-black font-semibold"
+          : "px-4 py-2 rounded-2xl hover:bg-base-200"
+      }
+    >
+      Coverage
+    </NavLink>
+  </li>
+
+  <li>
+    <NavLink
+      to="/rider"
+      className={({ isActive }) =>
+        isActive
+          ? "px-4 py-2 rounded-2xl bg-primary text-black font-semibold"
+          : "px-4 py-2 rounded-2xl hover:bg-base-200"
+      }
+    >
+      Be a Rider
+    </NavLink>
+  </li>
+
+  {user && (
+    <li>
+      <NavLink
+        to="/dashboard/my-parcels"
+        className={({ isActive }) =>
+          isActive
+            ? "px-4 py-2 rounded-2xl bg-primary text-black font-semibold"
+            : "px-4 py-2 rounded-2xl hover:bg-base-200"
+        }
+      >
+        My Parcels
+      </NavLink>
+    </li>
+  )}
+</>;
+
 
     const handleLogOut = () => {
         logOut()
@@ -46,7 +119,7 @@ const Navbar = () => {
     </div>
     <ul
       tabIndex={0}
-      className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow z-50"
+      className="menu menu-sm dropdown-content bg-base-100 rounded-box mt-3 w-52 p-2 shadow z-50 space-y-2"
     >
       {links}
     </ul>
@@ -55,8 +128,8 @@ const Navbar = () => {
 
 
   {/* Menu links for large screens */}
-  <div className="navbar-center hidden lg:flex">
-    <ul className="menu menu-horizontal px-1">{links}</ul>
+  <div className="navbar-center hidden lg:flex ">
+    <ul className="menu menu-horizontal px-1 space-x-2">{links}</ul>
   </div>
 
   {/* Right side buttons */}
