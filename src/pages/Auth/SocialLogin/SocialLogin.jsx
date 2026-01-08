@@ -44,7 +44,7 @@ const SocialLogin = () => {
               {/* Google login */}
         <button
           onClick={handleGoogleSignIn}
-          className="btn btn-outline btn-primary w-full flex items-center justify-center gap-2"
+          className="btn border border-[#94C6CB]  hover:bg-[#94C6CB] w-full flex items-center justify-center gap-2"
         >
           <FcGoogle size={24} /> Login with Google
         </button>
