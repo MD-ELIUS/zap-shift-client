@@ -77,14 +77,14 @@ const Navbar = () => {
   {user && (
     <li>
       <NavLink
-        to="/dashboard/my-parcels"
+        to="/pricing"
         className={({ isActive }) =>
           isActive
             ? "px-4 py-2 rounded-2xl bg-primary text-black font-semibold"
             : "px-4 py-2 rounded-2xl hover:bg-base-200"
         }
       >
-        My Parcels
+        Pricing
       </NavLink>
     </li>
   )}

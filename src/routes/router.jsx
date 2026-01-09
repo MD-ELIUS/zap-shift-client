@@ -23,6 +23,8 @@ import CompletedDeliveries from "../pages/dashboard/CompletedDeliveries/Complete
 import ParcelTrack from "../pages/ParcelTrack/ParcelTrack";
 import AboutUs from "../pages/AboutUs";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
+import PricingCalculator from "../pages/PricingCalculator";
+
 
 
 
@@ -53,6 +55,11 @@ export const router = createBrowserRouter([
         path: '/send-parcel',
         loader: () => fetch('/serviceCenters.json').then(res => res.json()),
         element: <PrivateRoute><SendParcel></SendParcel></PrivateRoute>
+      },
+      {
+       path: '/pricing',
+       loader: () => fetch('/serviceCenters.json').then(res => res.json()),
+       Component: PricingCalculator,
       },
       {
         path: 'parcel-track/:trackingId',
