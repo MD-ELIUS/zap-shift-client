@@ -89,7 +89,7 @@ const SendParcel = () => {
 
 
     return (
-        <div>
+        <div className=' p-4 sm:p-8 md:p-10 lg:p-12 xl:p-14 2xl:p-16  bg-white rounded-2xl shadow-lg max-w-7xl mx-auto mt-10 mb-16'>
             <h2 className='text-4xl font-bold'>
                 Send A Parcel
             </h2>

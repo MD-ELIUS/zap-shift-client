@@ -12,7 +12,6 @@ const Register = () => {
         register,
         handleSubmit,
         formState: { errors },
-        setValue,
     } = useForm();
 
     const { registerUser, updateUserProfile } = useAuth();
@@ -24,6 +23,7 @@ const Register = () => {
     const location = useLocation();
     const axiosSecure = useAxiosSecure();
 
+    // image preview handler
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -56,7 +56,7 @@ const Register = () => {
                         displayName: data.name,
                         photoURL,
                     }).then(() => {
-                        navigate(`${location.state ? location.state : '/'}`);
+                        navigate(location.state || '/');
                     });
                 });
             })
@@ -76,7 +76,7 @@ const Register = () => {
 
             <form onSubmit={handleSubmit(handleRegistration)} className="flex flex-col gap-4">
 
-                {/* Image Upload */}
+                {/* Profile Image */}
                 <div className="flex flex-col items-center gap-2">
                     <label className="relative w-28 h-28 rounded-full bg-gray-200 flex items-center justify-center cursor-pointer overflow-hidden">
 
@@ -90,19 +90,18 @@ const Register = () => {
                             <FaUser className="text-gray-400 text-4xl" />
                         )}
 
-                        <span className="absolute bottom-4 right-4 bg-primary text-black rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                        <span className="absolute bottom-3 right-3 bg-primary text-black rounded-full w-6 h-6 flex items-center justify-center text-sm">
                             <FaPlus />
                         </span>
 
                         <input
                             type="file"
                             accept="image/*"
-                            {...register('photo', { required: true })}
                             className="hidden"
-                            onChange={(e) => {
-                                handleImageChange(e);
-                                setValue('photo', e.target.files);
-                            }}
+                            {...register('photo', {
+                                required: 'Profile image is required',
+                                onChange: (e) => handleImageChange(e),
+                            })}
                         />
                     </label>
 
@@ -110,59 +109,62 @@ const Register = () => {
 
                     {errors.photo && (
                         <p className="text-red-500 text-sm">
-                            Profile image is required
+                            {errors.photo.message}
                         </p>
                     )}
                 </div>
 
                 {/* Name */}
                 <div className="flex flex-col gap-1">
-                    <label className="text-black font-semibold">Name</label>
+                    <label className="font-semibold">Name</label>
                     <input
                         type="text"
-                        {...register('name', { required: true })}
+                        {...register('name', { required: 'Name is required' })}
                         placeholder="Your Name"
-                        className="input w-full border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="input w-full border border-gray-300 focus:ring-2 focus:ring-primary"
                     />
                     {errors.name && (
-                        <p className="text-red-500 text-sm">Name is required</p>
+                        <p className="text-red-500 text-sm">
+                            {errors.name.message}
+                        </p>
                     )}
                 </div>
 
                 {/* Email */}
                 <div className="flex flex-col gap-1">
-                    <label className="text-black font-semibold">Email</label>
+                    <label className="font-semibold">Email</label>
                     <input
                         type="email"
-                        {...register('email', { required: true })}
+                        {...register('email', { required: 'Email is required' })}
                         placeholder="Email"
-                        className="input w-full border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="input w-full border border-gray-300 focus:ring-2 focus:ring-primary"
                     />
                     {errors.email && (
-                        <p className="text-red-500 text-sm">Email is required</p>
+                        <p className="text-red-500 text-sm">
+                            {errors.email.message}
+                        </p>
                     )}
                 </div>
 
-                {/* Password with Eye Icon */}
+                {/* Password */}
                 <div className="flex flex-col gap-1">
-                    <label className="text-black font-semibold">Password</label>
+                    <label className="font-semibold">Password</label>
 
                     <div className="relative">
                         <input
                             type={showPassword ? 'text' : 'password'}
                             {...register('password', {
-                                required: true,
-                                minLength: 6,
+                                required: 'Password is required',
                                 pattern:
                                     /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&^#()[\]{}<>+=._-]).{8}$/,
                             })}
                             placeholder="Password"
-                            className="input w-full pr-10 border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
+                            className="input w-full pr-10 border border-gray-300 focus:ring-2 focus:ring-primary"
                         />
 
                         <span
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-primary"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
                         >
                             {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </span>
@@ -179,12 +181,12 @@ const Register = () => {
 
                 <button
                     type="submit"
-                    className="btn-primary btn btn-outline text-black font-semibold py-2 mt-2"
+                    className="btn btn-primary text-black font-semibold mt-2"
                 >
                     Register
                 </button>
 
-                <p className="text-left text-sm mt-2 text-black">
+                <p className="text-sm mt-2">
                     Already have an account?{' '}
                     <Link
                         to="/login"

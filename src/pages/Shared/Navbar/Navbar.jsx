@@ -3,6 +3,7 @@ import Logo from '../../../components/Logo/Logo';
 import { Link, NavLink } from 'react-router';
 import useAuth from '../../../hooks/useAuth';
 import LoadingHome from '../../../components/Loading/LoadingHome';
+import avatarImg from "../../../assets/avatar.png"
 
 const Navbar = () => {
     const {user, logOut, loading} = useAuth();
@@ -18,7 +19,7 @@ const Navbar = () => {
           : "px-4 py-2 rounded-2xl hover:bg-base-200"
       }
     >
-      Services
+      Home
     </NavLink>
   </li>
 
@@ -132,32 +133,77 @@ const Navbar = () => {
     <ul className="menu menu-horizontal px-1 space-x-2">{links}</ul>
   </div>
 
-  {/* Right side buttons */}
-<div className="navbar-end flex items-center gap-2">
-  {user ? (
-    <button 
-      onClick={handleLogOut} 
-      className="btn px-2 py-1 sm:px-3 sm:py-2 md:px-4 md:py-2 text-xs sm:text-sm md:text-base"
-    >
-      Sign Out
-    </button>
-  ) : (
+{/* Right side */}
+<div className="navbar-end flex items-center gap-3">
+
+  {/* If NOT logged in */}
+  {!user && (
     <>
-      <Link 
-        to="/login" 
+      <Link
+        to="/login"
         className="btn px-2 py-1 sm:px-3 sm:py-2 md:px-4 md:py-2 text-xs sm:text-sm md:text-base"
       >
         Sign In
       </Link>
-      <Link 
-        to="/register" 
+
+      <Link
+        to="/register"
         className="btn btn-primary text-black px-2 py-1 sm:px-3 sm:py-2 md:px-4 md:py-2 text-xs sm:text-sm md:text-base"
       >
         Sign Up
       </Link>
     </>
   )}
+
+  {/* If logged in */}
+  {user && (
+    <div className="dropdown dropdown-end">
+
+      {/* Avatar */}
+      <label tabIndex={0} className="cursor-pointer">
+        <img
+          src={user.photoURL || avatarImg}
+          alt="User"
+          className="w-10 h-10 rounded-full border border-primary object-cover"
+        />
+      </label>
+
+    {/* Dropdown menu */}
+<ul
+  tabIndex={0}
+  className="dropdown-content z-[50] menu p-3 shadow bg-base-100 rounded-2xl w-52 mt-3"
+>
+  {/* User name */}
+  <li className="text-sm text-gray-500 mb-2 px-2">
+    {user?.displayName || "User"}
+  </li>
+
+  {/* Dashboard */}
+  <li>
+    <Link
+      to="/dashboard"
+      className="rounded-2xl px-3 py-2 hover:bg-base-200 transition"
+    >
+      Dashboard
+    </Link>
+  </li>
+
+  {/* Sign Out */}
+  <li>
+    <button
+      onClick={handleLogOut}
+      className="rounded-2xl px-3 py-2 text-red-500 hover:bg-base-200 transition w-full text-left"
+    >
+      Sign Out
+    </button>
+  </li>
+</ul>
+
+
+    </div>
+  )}
 </div>
+
 
 </div>
 

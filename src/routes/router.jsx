@@ -24,6 +24,7 @@ import ParcelTrack from "../pages/ParcelTrack/ParcelTrack";
 import AboutUs from "../pages/AboutUs";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import PricingCalculator from "../pages/PricingCalculator";
+import ErrorPage from "../components/Error/ErrorPage";
 
 
 
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     Component: RootLayout,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       {
         index: true,
