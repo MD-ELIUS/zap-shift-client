@@ -1,110 +1,217 @@
-import React from 'react';
-import { Link, NavLink, Outlet } from 'react-router';
-import { LiaCubeSolid, LiaCubesSolid } from "react-icons/lia";
-import { MdOutlineDirectionsBike, MdPayment } from 'react-icons/md';
-import { FaTasks, FaUsers } from 'react-icons/fa';
-import useRole from '../hooks/useRole';
-import { RiEBikeFill } from 'react-icons/ri';
-import { SiGoogletasks } from 'react-icons/si';
+import React, { useState } from "react";
+import { NavLink, Outlet } from "react-router";
+import {
+  FaHome,
+  FaTasks,
+  FaUsers,
+  FaSignOutAlt,
+  FaBars,
+} from "react-icons/fa";
+import { LiaCubeSolid } from "react-icons/lia";
+import { MdOutlineDirectionsBike, MdPayment } from "react-icons/md";
+import { RiEBikeFill } from "react-icons/ri";
+import { SiGoogletasks } from "react-icons/si";
+import { CgProfile } from "react-icons/cg";
+import useAuth from "../hooks/useAuth";
+import { AiFillDashboard } from "react-icons/ai";
+
+const NAVBAR_HEIGHT = "64px";
 
 const DashboardLayout = () => {
+  const { logOut } = useAuth();
+  const [collapsed, setCollapsed] = useState(true);
 
-  const { role } = useRole(); 
+  const showText = !collapsed;
 
-  console.log('dashboard role', role)
+  const linkClass =
+    "flex items-center gap-3 p-3 rounded-lg hover:bg-base-300 transition-all";
+
+  const activeClass = "bg-primary text-white font-semibold";
+
+  const dashboardLinks = (
+    <>
+      <li>
+        <NavLink
+        end
+          to="/dashboard"
+          className={({ isActive }) =>
+            `${linkClass} ${isActive ? activeClass : ""}`
+          }
+        >
+          <AiFillDashboard size={20} />
+          {showText && <span>Dashboard</span>}
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink
+          to="/dashboard/profile"
+          className={({ isActive }) =>
+            `${linkClass} ${isActive ? activeClass : ""}`
+          }
+        >
+          <CgProfile size={20} />
+          {showText && <span>My Profile</span>}
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink
+          to="/dashboard/my-parcels"
+          className={({ isActive }) =>
+            `${linkClass} ${isActive ? activeClass : ""}`
+          }
+        >
+          <LiaCubeSolid size={20} />
+          {showText && <span>My Parcels</span>}
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink
+          to="/dashboard/payment-history"
+          className={({ isActive }) =>
+            `${linkClass} ${isActive ? activeClass : ""}`
+          }
+        >
+          <MdPayment size={20} />
+          {showText && <span>Payment History</span>}
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink
+          to="/dashboard/assigned-deliveries"
+          className={({ isActive }) =>
+            `${linkClass} ${isActive ? activeClass : ""}`
+          }
+        >
+          <FaTasks size={20} />
+          {showText && <span>Assigned Deliveries</span>}
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink
+          to="/dashboard/completed-deliveries"
+          className={({ isActive }) =>
+            `${linkClass} ${isActive ? activeClass : ""}`
+          }
+        >
+          <SiGoogletasks size={20} />
+          {showText && <span>Completed Deliveries</span>}
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink
+          to="/dashboard/approve-riders"
+          className={({ isActive }) =>
+            `${linkClass} ${isActive ? activeClass : ""}`
+          }
+        >
+          <MdOutlineDirectionsBike size={20} />
+          {showText && <span>Approve Riders</span>}
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink
+          to="/dashboard/assign-riders"
+          className={({ isActive }) =>
+            `${linkClass} ${isActive ? activeClass : ""}`
+          }
+        >
+          <RiEBikeFill size={20} />
+          {showText && <span>Assign Riders</span>}
+        </NavLink>
+      </li>
+
+      <li>
+        <NavLink
+          to="/dashboard/users-management"
+          className={({ isActive }) =>
+            `${linkClass} ${isActive ? activeClass : ""}`
+          }
+        >
+          <FaUsers size={20} />
+          {showText && <span>Users Management</span>}
+        </NavLink>
+      </li>
+    </>
+  );
 
   return (
-    <div className="drawer lg:drawer-open">
-      <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content">
-        {/* Navbar */}
-        <nav className="navbar w-full bg-base-300">
-          <label htmlFor="my-drawer-4" aria-label="open sidebar" className="btn btn-square btn-ghost">
-            {/* Sidebar toggle icon */}
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor" className="my-1.5 inline-block size-4"><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path><path d="M9 4v16"></path><path d="M14 10l2 2l-2 2"></path></svg>
-          </label>
-          <div className="px-4">Zap Shift Dashboard</div>
-        </nav>
-        {/* Page content here */}
-        <Outlet></Outlet>
+    <div className="min-h-screen bg-base-100 max-w-[1400px] mx-auto relative">
+      {/* ================= NAVBAR ================= */}
+      <nav
+        className="navbar bg-base-300 sticky top-0 z-50 px-2"
+        style={{ height: NAVBAR_HEIGHT }}
+      >
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="btn btn-ghost btn-square"
+          title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+        >
+          <FaBars size={20} />
+        </button>
 
-      </div>
+        <h2 className="font-bold text-xl text-secondary ml-2">
+          <span className="text-primary">Zap</span><span className="text-secondary">Shift</span> Dashboard
+        </h2>
+      </nav>
 
-      <div className="drawer-side is-drawer-close:overflow-visible">
-        <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
-        <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
-          {/* Sidebar content here */}
-          <ul className="menu w-full grow">
-            {/* List item */}
-            <li>
-              <Link to='/' className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Homepage">
-                {/* Home icon */}
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor" className="my-1.5 inline-block size-4"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-                <span className="is-drawer-close:hidden">Homepage</span>
-              </Link>
-            </li>
+      {/* Wrapper for Sidebar and Content to keep sidebar relative to 1400px container */}
+      <div className="relative flex">
+        {/* ================= MOBILE OVERLAY ================= */}
+        {!collapsed && (
+          <div
+            onClick={() => setCollapsed(true)}
+            className="fixed inset-0 bg-black/40 z-30 md:hidden"
+          />
+        )}
 
-            {/* our dashboard links */}
-            <li>
-              <NavLink className='activeClass' to='/dashboard/my-parcels'> <LiaCubeSolid size={20} />
-                <span className="is-drawer-close:hidden"> My Parcels</span></NavLink>
-            </li>
-            <li>
-              <NavLink className='activeClass' to='/dashboard/payment-history'> <MdPayment size={20} />
-                <span className="is-drawer-close:hidden"> Payment History </span></NavLink>
-            </li>
-
-            {
-              role === 'rider' && <>
-                <li>
-                  <NavLink className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Assigned Deliveries" to="/dashboard/assigned-deliveries">
-                    <FaTasks />
-                    <span className="is-drawer-close:hidden">Assigned Deliveries</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Completed Deliveries" to="/dashboard/completed-deliveries">
-                    <SiGoogletasks />
-                    <span className="is-drawer-close:hidden">Completed Deliveries</span>
-                  </NavLink>
-                </li>
-              </>
+        {/* ================= SIDEBAR ================= */}
+        {/* Changed 'fixed' to 'absolute' so it respects the max-w container */}
+        <aside
+          className={`
+            absolute left-0 bg-base-200 z-40
+            transition-all duration-300 flex flex-col
+            h-[calc(100vh-64px)]
+            ${
+              collapsed
+                ? "w-16 -translate-x-full md:translate-x-0"
+                : "w-64 translate-x-0"
             }
+          `}
+        >
+          <ul className="menu flex-1 p-2">{dashboardLinks}</ul>
 
-            {
-              role === 'admin' && <>
+          <div className="p-2 border-t">
+            <button
+              onClick={logOut}
+              className="btn btn-outline w-full text-red-500 flex items-center gap-2"
+            >
+              <FaSignOutAlt />
+              {showText && <span>Log Out</span>}
+            </button>
+          </div>
+        </aside>
 
-                <li>
-                  <NavLink className='activeClass' to='/dashboard/approve-riders'> <MdOutlineDirectionsBike size={20} />
-                    <span className="is-drawer-close:hidden"> Approved Riders</span></NavLink>
-                </li>
-
-                <li>
-                  <NavLink className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Assign Riders" to="/dashboard/assign-riders">
-                    <RiEBikeFill />
-                    <span className="is-drawer-close:hidden">Assign Riders</span>
-                  </NavLink>
-                </li>
-
-                <li>
-                  <NavLink className='activeClass' to='/dashboard/users-management'> <FaUsers size={20} />
-                    <span className="is-drawer-close:hidden"> Users Management</span></NavLink>
-                </li>
-
-              </>
-            }
-
-
-            {/* List item */}
-            <li>
-              <button className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Settings">
-                {/* Settings icon */}
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor" className="my-1.5 inline-block size-4"><path d="M20 7h-9"></path><path d="M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle></svg>
-                <span className="is-drawer-close:hidden">Settings</span>
-              </button>
-            </li>
-          </ul>
-        </div>
+        {/* ================= MAIN CONTENT ================= */}
+        <main
+          className={`
+            flex-1
+            transition-all duration-300
+            pt-4
+            md:ml-16
+            ${!collapsed && "md:ml-64"}
+          `}
+        >
+          <div className="p-4">
+            <Outlet />
+          </div>
+        </main>
       </div>
     </div>
   );

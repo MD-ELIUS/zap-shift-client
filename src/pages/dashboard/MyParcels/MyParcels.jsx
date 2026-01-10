@@ -10,56 +10,45 @@ import { Link } from 'react-router';
 
 const MyParcels = () => {
   const { user } = useAuth();
-  const axiosSecure = useAxiosSecure()
-  console.log(user)
+  const axiosSecure = useAxiosSecure();
+  console.log(user);
 
   const { data: parcels = [], refetch } = useQuery({
-
     queryKey: ['myParcels', user?.email],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/parcels?email=${user.email}`)
-      return res.data
-    }
-  })
+      const res = await axiosSecure.get(`/parcels?email=${user.email}`);
+      return res.data;
+    },
+  });
 
-  console.log(parcels)
+  console.log(parcels);
 
   const handleParcelDelete = (id) => {
-    console.log(id)
+    console.log(id);
     Swal.fire({
-      title: "Are you sure?",
+      title: 'Are you sure?',
       text: "You won't be able to revert this!",
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-
-        axiosSecure.delete(`parcels/${id}`)
-          .then(res => {
-            console.log(res.data)
-
-
-            if (res.data.deletedCount) {
-
-              // refresh the data in the ui 
-              refetch()
-              Swal.fire({
-                title: "Deleted!",
-                text: "Your parcel request has been deleted.",
-                icon: "success"
-              });
-
-            }
-          })
-
-
-
+        axiosSecure.delete(`parcels/${id}`).then((res) => {
+          console.log(res.data);
+          if (res.data.deletedCount) {
+            refetch();
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'Your parcel request has been deleted.',
+              icon: 'success',
+            });
+          }
+        });
       }
     });
-  }
+  };
 
   const handlePayment = async (parcel) => {
     const paymentInfo = {
@@ -67,21 +56,22 @@ const MyParcels = () => {
       parcelId: parcel._id,
       senderEmail: parcel.senderEmail,
       parcelName: parcel.parcelName,
-      trackingId: parcel.trackingId
-    }
-    const res = await axiosSecure.post('/payment-checkout-session', paymentInfo)
-    console.log(res.data.url)
+      trackingId: parcel.trackingId,
+    };
+    const res = await axiosSecure.post('/payment-checkout-session', paymentInfo);
     window.location.assign(res.data.url);
-  }
+  };
 
   return (
-    <div>
-      <h2> All of my parcels: {parcels.length} </h2>
+    <div className="w-full">
+      <h2 className="text-2xl font-bold text-secondary mb-4">
+        All of my parcels: <span className="text-primary">{parcels.length}</span>
+      </h2>
 
-      <div className="overflow-x-auto">
-        <table className="table table-zebra">
+      <div className="overflow-x-auto shadow-lg rounded-lg border border-base-300">
+        <table className="table table-zebra w-full">
           {/* head */}
-          <thead>
+          <thead className="bg-base-200">
             <tr>
               <th></th>
               <th>Sender Name</th>
@@ -95,45 +85,64 @@ const MyParcels = () => {
             </tr>
           </thead>
           <tbody>
-            {
-              parcels.map((parcel, index) => <tr key={parcel._id}>
+            {parcels.map((parcel, index) => (
+              <tr key={parcel._id}>
                 <th>{index + 1}</th>
                 <td>{parcel.senderName}</td>
-                <td> {parcel.receiverName} </td>
-                <td> {parcel.senderDistrict} to {parcel.receiverDistrict} </td>
-                <td>{parcel.cost}</td>
+                <td>{parcel.receiverName}</td>
                 <td>
-                  {
-                    parcel.paymentStatus === 'paid' ?
-                      <span className='text-green-500'>Paid</span> :
-                      <div className=' flex gap-1 items-center'>
-                        {/* <span className='text-yellow-500'>Pending</span> */}
-                        {/* <Link to={`/dashboard/payment/${parcel._id}`} className='btn btn-primary btn-sm'>Pay</Link> */}
-                        <button onClick={() => handlePayment(parcel)} className='btn btn-primary btn-sm text-black'>Pay</button>
-                      </div>
-
-                  }
+                  {parcel.senderDistrict} → {parcel.receiverDistrict}
+                </td>
+                <td>${parcel.cost}</td>
+                <td>
+                  {parcel.paymentStatus === 'paid' ? (
+                    <span className="badge badge-success">Paid</span>
+                  ) : (
+                    <button
+                      onClick={() => handlePayment(parcel)}
+                      className="btn btn-primary btn-sm text-black"
+                    >
+                      Pay
+                    </button>
+                  )}
                 </td>
                 <td>
-                  <Link to={`/parcel-track/${parcel.trackingId}`}> {parcel.trackingId}</Link>
+                  <Link
+                    to={`/parcel-track/${parcel.trackingId}`}
+                    className="text-primary hover:underline"
+                  >
+                    {parcel.trackingId}
+                  </Link>
                 </td>
-                <td>{parcel.deliveryStatus}</td>
-
                 <td>
-                  <button className='btn btn-square hover:bg-primary mx-2'>
-                    <FiEdit></FiEdit>
-                  </button>
-                  <button className='btn btn-square hover:bg-primary mx-2'>
-                    <FaEye></FaEye>
-                  </button>
-                  <button onClick={() => handleParcelDelete(parcel._id)} className='btn btn-square hover:bg-primary mx-2'>
-                    <FaTrashCan></FaTrashCan>
-                  </button>
-
+                  <span
+                    className={`badge ${
+                      parcel.deliveryStatus === 'delivered'
+                        ? 'badge-success'
+                        : parcel.deliveryStatus === 'pending'
+                        ? 'badge-warning'
+                        : 'badge-info'
+                    }`}
+                  >
+                    {parcel.deliveryStatus}
+                  </span>
                 </td>
-              </tr>)
-            }
-
+                <td className="flex gap-2">
+                  <button className="btn btn-square btn-sm hover:bg-primary hover:text-white">
+                    <FiEdit />
+                  </button>
+                  <button className="btn btn-square btn-sm hover:bg-primary hover:text-white">
+                    <FaEye />
+                  </button>
+                  <button
+                    onClick={() => handleParcelDelete(parcel._id)}
+                    className="btn btn-square btn-sm hover:bg-red-500 hover:text-white"
+                  >
+                    <FaTrashCan />
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

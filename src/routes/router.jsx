@@ -25,6 +25,7 @@ import AboutUs from "../pages/AboutUs";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import PricingCalculator from "../pages/PricingCalculator";
 import ErrorPage from "../components/Error/ErrorPage";
+import MyProfile from "../pages/dashboard/Profile/MyProfile";
 
 
 
@@ -95,6 +96,10 @@ export const router = createBrowserRouter([
     path: '/dashboard',
     element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute>,
     children: [
+      {
+        path: 'profile',
+        Component: MyProfile
+      },
       {
         path: 'my-parcels',
         Component: MyParcels

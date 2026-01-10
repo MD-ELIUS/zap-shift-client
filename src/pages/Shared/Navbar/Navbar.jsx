@@ -4,6 +4,12 @@ import { Link, NavLink } from 'react-router';
 import useAuth from '../../../hooks/useAuth';
 import LoadingHome from '../../../components/Loading/LoadingHome';
 import avatarImg from "../../../assets/avatar.png"
+import {
+  FaSignInAlt,
+  FaUserPlus,
+  FaTachometerAlt,
+  FaSignOutAlt,
+} from "react-icons/fa";
 
 const Navbar = () => {
     const {user, logOut, loading} = useAuth();
@@ -141,15 +147,17 @@ const Navbar = () => {
     <>
       <Link
         to="/login"
-        className="btn px-2 py-1 sm:px-3 sm:py-2 md:px-4 md:py-2 text-xs sm:text-sm md:text-base"
+        className="btn flex items-center gap-2 px-2 py-1 sm:px-3 sm:py-2 md:px-4 md:py-2 text-xs sm:text-sm md:text-base"
       >
+        <FaSignInAlt />
         Sign In
       </Link>
 
       <Link
         to="/register"
-        className="btn btn-primary text-black px-2 py-1 sm:px-3 sm:py-2 md:px-4 md:py-2 text-xs sm:text-sm md:text-base"
+        className="btn btn-primary text-black flex items-center gap-2 px-2 py-1 sm:px-3 sm:py-2 md:px-4 md:py-2 text-xs sm:text-sm md:text-base"
       >
+        <FaUserPlus />
         Sign Up
       </Link>
     </>
@@ -168,42 +176,42 @@ const Navbar = () => {
         />
       </label>
 
-    {/* Dropdown menu */}
-<ul
-  tabIndex={0}
-  className="dropdown-content z-[50] menu p-3 shadow bg-base-100 rounded-2xl w-52 mt-3"
->
-  {/* User name */}
-  <li className="text-sm text-gray-500 mb-2 px-2">
-    {user?.displayName || "User"}
-  </li>
+      {/* Dropdown menu */}
+      <ul
+        tabIndex={0}
+        className="dropdown-content z-[50] menu p-3 shadow bg-base-100 rounded-2xl w-52 mt-3"
+      >
+        {/* User name */}
+        <li className="text-sm text-gray-500 mb-2 px-2">
+          {user?.displayName || "User"}
+        </li>
 
-  {/* Dashboard */}
-  <li>
-    <Link
-      to="/dashboard"
-      className="rounded-2xl px-3 py-2 hover:bg-base-200 transition"
-    >
-      Dashboard
-    </Link>
-  </li>
+        {/* Dashboard */}
+        <li>
+          <Link
+            to="/dashboard"
+            className="flex items-center gap-2 rounded-2xl px-3 py-2 hover:bg-base-200 transition"
+          >
+            <FaTachometerAlt />
+            Dashboard
+          </Link>
+        </li>
 
-  {/* Sign Out */}
-  <li>
-    <button
-      onClick={handleLogOut}
-      className="rounded-2xl px-3 py-2 text-red-500 hover:bg-base-200 transition w-full text-left"
-    >
-      Sign Out
-    </button>
-  </li>
-</ul>
-
+        {/* Sign Out */}
+        <li>
+          <button
+            onClick={handleLogOut}
+            className="flex items-center gap-2 rounded-2xl px-3 py-2 text-red-500 hover:bg-base-200 transition w-full text-left"
+          >
+            <FaSignOutAlt />
+            Sign Out
+          </button>
+        </li>
+      </ul>
 
     </div>
   )}
 </div>
-
 
 </div>
 
