@@ -3,7 +3,7 @@ import React from 'react';
 
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:5205'
+    baseURL: 'https://zap-shift-server-jet-pi.vercel.app'
 })
 
 const useAxios = () => {

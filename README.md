@@ -10,7 +10,9 @@
 **ZapShift** is a high-performance, full-stack MERN parcel management system. It provides a seamless connection between users, delivery riders, and administrators to ensure that parcels are handled with care and delivered on time. The platform features real-time tracking, secure payments with Stripe, and distinct dashboards for different user roles.
 
 **Live Demo:** [ZapShift Live](https://zap-shift-client-gamma.vercel.app)
+
 **Client Repository:** [ZapShift Client](https://github.com/MD-ELIUS/zap-shift-client)
+
 **Server Repository:** [ZapShift Server](https://github.com/MD-ELIUS/zap-shift-server)
 
 ## 🛠 Features

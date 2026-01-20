@@ -2,59 +2,137 @@ import React from 'react';
 import useAuth from '../../../hooks/useAuth';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router';
 
 const PaymentHistory = () => {
-    const {user} = useAuth() ;
-    const axiosSecure = useAxiosSecure() ;
-    
-    const {data: payments = []} = useQuery({
-        queryKey: ['payments', user?.email],
-        queryFn: async() => {
-            const res = await axiosSecure.get(`/payments?email=${user.email}`)
-            return res.data ;
-            
-        }
-    })
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+
+  const [page, setPage] = React.useState(1);
+  const limit = 5;
+
+  const [searchTerm, setSearchTerm] = React.useState('');
+
+  const { data: response = {}, isLoading, isFetching } = useQuery({
+    queryKey: ['payments', user?.email, page, searchTerm],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/payments?email=${user.email}&page=${page}&limit=${limit}&searchText=${searchTerm}`)
+      return res.data;
+    },
+    keepPreviousData: true
+  })
 
 
 
-    return (
-        <div>
-            <h2 className="text-4xl">Payment History: {payments.length}</h2>
+  // Handle new response format: { results: [...], count: ... } or fallback to []
+  const payments = response.results || [];
+  const totalCount = response.count || 0;
+  const totalPages = Math.ceil(totalCount / limit);
 
-            <div className="overflow-x-auto">
-  <table className="table table-zebra">
-    {/* head */}
-    <thead>
-      <tr>
-        <th></th>
-        <th>Parcel Name</th>
-        <th>Cost</th>
-        <th>Transaction Id</th>
-        <th>Tracking Id</th>
+  // Filter now happens on server
+  const filteredPayments = payments;
 
-        <th>Payment Date</th>
-      </tr>
-    </thead>
-    <tbody>
-       {
-        payments.map((payment, index) => <tr key={payment._id}>
+  return (
+    <div className="w-full">
+      <h2 className="text-2xl font-bold text-secondary mb-4">
+        Payment History: <span className="text-primary">{totalCount}</span>
+      </h2>
 
-          <th>{index + 1}</th>
-        <td>{payment.parcelName}</td>
-        <td>{payment.amount}</td>
-        <td>{payment.transactionId}</td>
-        <td>{payment.trackingId}</td>
-        <td>{payment.paidAt}</td>
-
-        </tr>)
-       }
-     
-    </tbody>
-  </table>
-</div>
+      {/* Search Bar */}
+      <div className="mb-4">
+        <div className="relative group max-w-sm">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+            <svg className="h-5 w-5 text-gray-600 group-focus-within:text-primary transition-colors" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPage(1);
+            }}
+            type="search"
+            className="input input-bordered w-full pl-10 focus:border-primary focus:outline-none shadow-sm"
+            placeholder="Search Transaction or Parcel..." />
         </div>
-    );
+      </div>
+
+      {/* Table Container with Shadow and Border */}
+      {isLoading || isFetching ? (
+        <div className="flex justify-center items-center h-64">
+          <span className="loading loading-bars loading-lg text-secondary"></span>
+        </div>
+      ) : (
+        <div className="overflow-x-auto shadow-lg rounded-lg border border-base-300">
+          <table className="table table-zebra w-full text-center min-w-[800px]">
+            {/* Head with secondary background and white text */}
+            <thead className="bg-secondary text-white">
+              <tr>
+                <th>#</th>
+                <th>Parcel Name</th>
+                <th>Cost</th>
+                <th>Transaction Id</th>
+                <th>Tracking Id</th>
+                <th>Payment Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                filteredPayments.map((payment, index) => (
+                  <tr key={payment._id}>
+                    <th>{index + 1}</th>
+                    <td className="font-medium">{payment.parcelName}</td>
+                    <td className="font-bold text-secondary">${payment.amount}</td>
+                    <td className="text-sm opacity-70">{payment.transactionId}</td>
+                    <td>
+                      <Link
+                        to={`/parcel-track/${payment.trackingId}`}
+                        className="text-secondary hover:underline"
+                      >
+                        {payment.trackingId}
+                      </Link>
+                    </td>
+                    <td>
+                      {new Date(payment.paidAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+
+          {/* Empty State */}
+          {payments.length === 0 && (
+            <div className="text-center py-10 text-gray-500">
+              No payment history found.
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center items-center mt-6 gap-4">
+        <button
+          className="btn btn-sm btn-outline"
+          onClick={() => setPage((old) => Math.max(old - 1, 1))}
+          disabled={page === 1}
+        >
+          Previous
+        </button>
+        <span className="text-sm font-semibold">
+          Page {page} of {totalPages || 1}
+        </span>
+        <button
+          className="btn btn-sm btn-outline"
+          onClick={() => setPage((old) => (payments.length === limit ? old + 1 : old))}
+          disabled={page === totalPages || totalPages === 0}
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default PaymentHistory;

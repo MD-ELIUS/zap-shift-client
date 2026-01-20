@@ -2,6 +2,7 @@ import React from 'react';
 import useAuth from '../hooks/useAuth';
 import useRole from '../hooks/useRole';
 import Loading from '../components/Loading/Loading';
+import Forbidden from '../components/Forbidden/Forbidden';
 
 
 const RiderRoute = ({ children }) => {
