@@ -1,27 +1,23 @@
-import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useRole from "../../../hooks/useRole";
 import { FaCamera } from "react-icons/fa";
+import { useState } from "react";
 
 const MyProfile = () => {
   const { user, updateUserProfile } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const queryClient = useQueryClient();
 
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState(user?.displayName || "");
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(user?.photoURL);
 
-  // 🔹 get role
-  const { data: roleData = {} } = useQuery({
-    queryKey: ["my-role"],
-    queryFn: async () => {
-      const res = await axiosSecure.get("/users/me/role");
-      return res.data;
-    }
-  });
+  // 🔹 get role using unified hook
+  const { role, roleLoading } = useRole();
 
   // 🔹 image preview
   const handleImageChange = (e) => {
@@ -50,19 +46,36 @@ const MyProfile = () => {
         photoURL = data.data.url;
       }
 
-      // ✅ firebase update (IMPORTANT FIX)
+      // ✅ firebase update
       await updateUserProfile({
         displayName: name,
         photoURL,
       });
 
-      await user.reload(); // 🔥 force refresh
+      await user.reload();
 
-      // ✅ database update
+      // ✅ database update (User collection)
       await axiosSecure.patch("/users/me/profile", {
         displayName: name,
         photoURL,
       });
+
+      // ✅ database update (Rider collection - if rider)
+      if (role === 'rider') {
+        const riderUpdateInfo = {
+          riderNID: modalRiderInfo.riderNID,
+          riderContact: modalRiderInfo.riderContact,
+          riderRegion: modalRiderInfo.riderRegion,
+          riderDistrict: modalRiderInfo.riderDistrict,
+          riderAge: modalRiderInfo.riderAge,
+          riderLicense: modalRiderInfo.riderLicense,
+        };
+        await axiosSecure.patch("/riders/me", riderUpdateInfo);
+        queryClient.invalidateQueries(["my-rider-info"]);
+      }
+
+      // Invalidate role query to ensure navigation/sidebar updates
+      queryClient.invalidateQueries(['user-role', user?.email]);
 
       Swal.fire({
         icon: "success",
@@ -77,65 +90,117 @@ const MyProfile = () => {
     }
   };
 
+  // 🔹 fetch service centers
+  const { data: serviceCenters = [] } = useQuery({
+    queryKey: ["service-centers"],
+    queryFn: async () => {
+      const res = await fetch("/serviceCenters.json");
+      return res.json();
+    }
+  });
+
+  const regions = [...new Set(serviceCenters.map(c => c.region))];
+
+  const districtsByRegion = (region) => {
+    return serviceCenters
+      .filter(c => c.region === region)
+      .map(d => d.district);
+  };
+
+  // 🔹 Rider specific info fetch
+  const { data: riderInfo = {}, refetch: refetchRider } = useQuery({
+    queryKey: ["my-rider-info"],
+    enabled: role === 'rider',
+    queryFn: async () => {
+      const res = await axiosSecure.get("/riders/me");
+      return res.data || {};
+    }
+  });
+
+  const handleRiderFieldChange = (field, value) => {
+    // Note: Since name/email are in user, we handle specific rider fields separately
+    // We can just update the local riderInfo if we use a state, but for simplicity
+    // and since useQuery data should be immutable, we'll use a local state for the modal fields
+  };
+
+  // State for modal fields (to allow editing)
+  const [modalRiderInfo, setModalRiderInfo] = useState({});
+
+  const openModal = () => {
+    setModalRiderInfo({ ...riderInfo });
+    setIsOpen(true);
+  };
+
   return (
-    <div className=" ">
-      <h2 className="text-3xl font-bold mb-6">My Profile</h2>
+    <div className="p-4 sm:p-6">
+      <h2 className="text-3xl font-bold mb-6 text-secondary">My Profile</h2>
 
       {/* Profile Card */}
-      <div className="bg-base-100 shadow rounded-2xl p-6 flex flex-col md:flex-row gap-6 border border-primary">
-        <img
-          src={user?.photoURL}
-          className="w-32 h-32 rounded-full object-cover border"
-        />
+      <div className="bg-base-100 shadow rounded-2xl p-6 flex flex-col md:flex-row gap-8 border border-primary">
+        <div className="flex flex-col items-center gap-4">
+          <img
+            src={user?.photoURL}
+            className="w-32 h-32 rounded-full object-cover border-2 border-primary"
+          />
+          <span className="badge badge-primary text-black font-bold uppercase py-3 px-4">
+            {role}
+          </span>
+        </div>
 
-        <div className="space-y-2">
-          <p><b>Name:</b> {user?.displayName}</p>
-          <p><b>Email:</b> {user?.email}</p>
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+          <p className="border-b border-base-200 pb-1"><b>Name:</b> {user?.displayName}</p>
+          <p className="border-b border-base-200 pb-1"><b>Email:</b> {user?.email}</p>
 
-          <p>
-            <b>Role:</b>{" "}
-            <span className="badge badge-primary text-black">
-              {roleData.role}
-            </span>
-          </p>
-
-          <p>
+          <p className="border-b border-base-200 pb-1">
             <b>Account Created:</b>{" "}
-            {new Date(user?.metadata?.creationTime).toLocaleString()}
+            {new Date(user?.metadata?.creationTime).toLocaleDateString()}
           </p>
 
-          <p>
+          <p className="border-b border-base-200 pb-1">
             <b>Last Login:</b>{" "}
-            {new Date(user?.metadata?.lastSignInTime).toLocaleString()}
+            {new Date(user?.metadata?.lastSignInTime).toLocaleDateString()}
           </p>
 
-          <button
-            onClick={() => setIsOpen(true)}
-            className="btn btn-outline btn-sm mt-3"
-          >
-            Edit Profile
-          </button>
+          {/* Rider Specific Fields */}
+          {role === 'rider' && (
+            <>
+              <p className="border-b border-base-200 pb-1"><b>NID:</b> {riderInfo.riderNID || 'N/A'}</p>
+              <p className="border-b border-base-200 pb-1"><b>Contact:</b> {riderInfo.riderContact || 'N/A'}</p>
+              <p className="border-b border-base-200 pb-1"><b>Region:</b> {riderInfo.riderRegion || 'N/A'}</p>
+              <p className="border-b border-base-200 pb-1"><b>District:</b> {riderInfo.riderDistrict || 'N/A'}</p>
+              <p className="border-b border-base-200 pb-1"><b>Age:</b> {riderInfo.riderAge || 'N/A'}</p>
+              <p className="border-b border-base-200 pb-1"><b>License:</b> {riderInfo.riderLicense || 'N/A'}</p>
+            </>
+          )}
+
+          <div className="md:col-span-2 pt-4">
+            <button
+              onClick={openModal}
+              className="btn btn-primary text-black px-8"
+            >
+              Edit Profile
+            </button>
+          </div>
         </div>
       </div>
 
       {/* 🔹 Edit Modal */}
       {isOpen && (
         <dialog open className="modal">
-          <div className="modal-box rounded-2xl">
-
-            <h3 className="font-bold text-lg mb-4 text-center">
-              Edit Profile
+          <div className="modal-box rounded-2xl max-w-2xl">
+            <h3 className="font-bold text-2xl mb-6 text-center text-secondary">
+              Update Profile Details
             </h3>
 
             {/* Avatar upload */}
-            <div className="flex justify-center mb-4">
-              <label className="relative w-28 h-28 rounded-full overflow-hidden cursor-pointer border">
+            <div className="flex justify-center mb-6">
+              <label className="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer border-2 border-primary group">
                 <img
                   src={preview}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition">
-                  <FaCamera className="text-white text-xl" />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                  <FaCamera className="text-white text-2xl" />
                 </div>
                 <input
                   type="file"
@@ -146,25 +211,113 @@ const MyProfile = () => {
               </label>
             </div>
 
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="input input-bordered w-full mb-4"
-              placeholder="Name"
-            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="form-control">
+                <label className="label"><span className="label-text font-bold">Display Name</span></label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="input input-bordered w-full"
+                />
+              </div>
 
-            <div className="modal-action">
+              {role === 'rider' && (
+                <>
+                  <div className="form-control">
+                    <label className="label"><span className="label-text font-bold">Contact Number</span></label>
+                    <input
+                      type="text"
+                      value={modalRiderInfo.riderContact || ""}
+                      onChange={(e) => {
+                        setModalRiderInfo({ ...modalRiderInfo, riderContact: e.target.value });
+                      }}
+                      className="input input-bordered w-full"
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label className="label"><span className="label-text font-bold">NID</span></label>
+                    <input
+                      type="text"
+                      value={modalRiderInfo.riderNID || ""}
+                      onChange={(e) => {
+                        setModalRiderInfo({ ...modalRiderInfo, riderNID: e.target.value });
+                      }}
+                      className="input input-bordered w-full"
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label className="label"><span className="label-text font-bold">Age</span></label>
+                    <input
+                      type="text"
+                      value={modalRiderInfo.riderAge || ""}
+                      onChange={(e) => {
+                        setModalRiderInfo({ ...modalRiderInfo, riderAge: e.target.value });
+                      }}
+                      className="input input-bordered w-full"
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label className="label"><span className="label-text font-bold">Region</span></label>
+                    <select
+                      value={modalRiderInfo.riderRegion || ""}
+                      onChange={(e) => {
+                        const newRegion = e.target.value;
+                        setModalRiderInfo({
+                          ...modalRiderInfo,
+                          riderRegion: newRegion,
+                          riderDistrict: "" // Reset district when region changes
+                        });
+                      }}
+                      className="select select-bordered w-full"
+                    >
+                      <option value="" disabled>Pick a region</option>
+                      {regions.map((r, i) => (
+                        <option key={i} value={r}>{r}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-control">
+                    <label className="label"><span className="label-text font-bold">District</span></label>
+                    <select
+                      value={modalRiderInfo.riderDistrict || ""}
+                      onChange={(e) => {
+                        setModalRiderInfo({ ...modalRiderInfo, riderDistrict: e.target.value });
+                      }}
+                      className="select select-bordered w-full"
+                      disabled={!modalRiderInfo.riderRegion}
+                    >
+                      <option value="" disabled>Pick a district</option>
+                      {districtsByRegion(modalRiderInfo.riderRegion).map((d, i) => (
+                        <option key={i} value={d}>{d}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-control">
+                    <label className="label"><span className="label-text font-bold">License</span></label>
+                    <input
+                      type="text"
+                      value={modalRiderInfo.riderLicense || ""}
+                      onChange={(e) => {
+                        setModalRiderInfo({ ...modalRiderInfo, riderLicense: e.target.value });
+                      }}
+                      className="input input-bordered w-full"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="modal-action mt-8">
               <button
                 onClick={handleUpdate}
-                className="btn btn-primary text-black"
+                className="btn btn-primary text-black px-8"
               >
-                Save
+                Save Changes
               </button>
-
               <button
                 onClick={() => setIsOpen(false)}
-                className="btn"
+                className="btn btn-ghost"
               >
                 Cancel
               </button>
