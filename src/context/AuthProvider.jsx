@@ -51,8 +51,14 @@ const AuthProvider = ({ children }) => {
     };
 
     // Update User Profile
-    const updateUserProfile = (profile) => {
-        return updateProfile(auth.currentUser, profile);
+    const updateUserProfile = async (profile) => {
+        setLoading(true);
+        try {
+            await updateProfile(auth.currentUser, profile);
+            setUser({ ...auth.currentUser }); // Manually update state to trigger re-renders
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
