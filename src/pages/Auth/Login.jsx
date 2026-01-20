@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
 import SocialLogin from './SocialLogin/SocialLogin';
 import { Link, useLocation, useNavigate } from 'react-router';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
-
+    const [showPassword, setShowPassword] = useState(false);
     const { register, formState: { errors }, handleSubmit } = useForm();
     const { signInUser } = useAuth();
     const navigate = useNavigate();
@@ -24,7 +25,7 @@ const Login = () => {
     };
 
     return (
-       <div className="w-full max-w-md mx-auto my-12 rounded-xl">
+        <div className="w-full max-w-md mx-auto my-12 rounded-xl">
 
 
             {/* Title */}
@@ -57,12 +58,20 @@ const Login = () => {
                 {/* Password */}
                 <div className="flex flex-col gap-1">
                     <label className="text-black font-semibold">Password</label>
-                    <input
-                        type="password"
-                        {...register('password', { required: true, minLength: 6 })}
-                        placeholder="Password"
-                        className="input w-full  border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
+                    <div className="relative">
+                        <input
+                            type={showPassword ? 'text' : 'password'}
+                            {...register('password', { required: true, minLength: 6 })}
+                            placeholder="Password"
+                            className="input w-full pr-10 border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                        <span
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+                        >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </span>
+                    </div>
                     {errors.password?.type === 'minLength' && (
                         <p className="text-red-500">Password must be 6 characters or longer</p>
                     )}
