@@ -1,4 +1,5 @@
 import React from 'react';
+import useTitle from '../../../hooks/useTitle';
 import { useQuery } from '@tanstack/react-query';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import useAuth from '../../../hooks/useAuth';
@@ -20,6 +21,7 @@ import Loading from '../../../components/Loading/Loading';
 const COLORS = ['#CAEB66', '#03373D', '#FFBB28', '#FF8042', '#8884d8'];
 
 const Statistics = () => {
+    useTitle("Statistics");
     const axiosSecure = useAxiosSecure();
     const { user, loading } = useAuth();
 

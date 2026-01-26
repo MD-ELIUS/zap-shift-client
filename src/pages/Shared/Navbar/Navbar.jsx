@@ -23,6 +23,7 @@ const Navbar = () => {
     <li>
       <NavLink
         to="/"
+        onClick={() => document.activeElement?.blur()}
         className={({ isActive }) =>
           isActive
             ? "px-4 py-2 rounded-2xl bg-primary text-black font-semibold"
@@ -36,6 +37,7 @@ const Navbar = () => {
     <li>
       <NavLink
         to="/about"
+        onClick={() => document.activeElement?.blur()}
         className={({ isActive }) =>
           isActive
             ? "px-4 py-2 rounded-2xl bg-primary text-black font-semibold"
@@ -51,6 +53,7 @@ const Navbar = () => {
         <li>
           <NavLink
             to="/send-parcel"
+            onClick={() => document.activeElement?.blur()}
             className={({ isActive }) =>
               isActive
                 ? "px-4 py-2 rounded-2xl bg-primary text-black font-semibold"
@@ -66,6 +69,7 @@ const Navbar = () => {
     <li>
       <NavLink
         to="/coverage"
+        onClick={() => document.activeElement?.blur()}
         className={({ isActive }) =>
           isActive
             ? "px-4 py-2 rounded-2xl bg-primary text-black font-semibold"
@@ -80,6 +84,7 @@ const Navbar = () => {
       <li>
         <NavLink
           to="/rider"
+          onClick={() => document.activeElement?.blur()}
           className={({ isActive }) =>
             isActive
               ? "px-4 py-2 rounded-2xl bg-primary text-black font-semibold"
@@ -95,6 +100,7 @@ const Navbar = () => {
       <li>
         <NavLink
           to="/pricing"
+          onClick={() => document.activeElement?.blur()}
           className={({ isActive }) =>
             isActive
               ? "px-4 py-2 rounded-2xl bg-primary text-black font-semibold"

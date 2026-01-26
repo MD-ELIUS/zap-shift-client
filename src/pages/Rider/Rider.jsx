@@ -1,4 +1,5 @@
 import React from 'react';
+import useTitle from '../../hooks/useTitle';
 import { useForm, useWatch } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
@@ -7,11 +8,13 @@ import Swal from 'sweetalert2';
 import riderImg from "../../assets/agent-pending.png"; // image add করো
 
 const Rider = () => {
+    useTitle("Be a Rider");
 
     const {
         register,
         handleSubmit,
         control,
+        formState: { errors },
     } = useForm();
 
     const { user } = useAuth();
@@ -98,8 +101,9 @@ const Rider = () => {
                                         <input
                                             type="text"
                                             className="input w-full"
-                                            {...register('riderNID')}
+                                            {...register('riderNID', { required: "NID is required" })}
                                         />
+                                        {errors.riderNID && <p className="text-red-500 text-sm mt-1">{errors.riderNID.message}</p>}
                                     </fieldset>
 
                                     <fieldset className="fieldset mt-4">
@@ -107,21 +111,24 @@ const Rider = () => {
                                         <input
                                             type="tel"
                                             className="input w-full"
-                                            {...register('riderContact')}
+                                            {...register('riderContact', { required: "Contact number is required" })}
                                         />
+                                        {errors.riderContact && <p className="text-red-500 text-sm mt-1">{errors.riderContact.message}</p>}
                                     </fieldset>
 
                                     <fieldset className="fieldset mt-4">
                                         <legend className="fieldset-legend">Rider Region</legend>
                                         <select
-                                            {...register('riderRegion')}
+                                            {...register('riderRegion', { required: "Region is required" })}
                                             className="select w-full"
+                                            defaultValue=""
                                         >
-                                            <option disabled>Pick a region</option>
+                                            <option value="" disabled>Pick a region</option>
                                             {regions.map((r, i) => (
                                                 <option key={i} value={r}>{r}</option>
                                             ))}
                                         </select>
+                                        {errors.riderRegion && <p className="text-red-500 text-sm mt-1">{errors.riderRegion.message}</p>}
                                     </fieldset>
                                 </div>
 
@@ -142,30 +149,34 @@ const Rider = () => {
                                         <input
                                             type="text"
                                             className="input w-full"
-                                            {...register('riderLicense')}
+                                            {...register('riderLicense', { required: "Driving license is required" })}
                                         />
+                                        {errors.riderLicense && <p className="text-red-500 text-sm mt-1">{errors.riderLicense.message}</p>}
                                     </fieldset>
 
                                     <fieldset className="fieldset mt-4">
                                         <label className="label">Rider Age</label>
                                         <input
-                                            type="text"
+                                            type="number"
                                             className="input w-full"
-                                            {...register('riderAge')}
+                                            {...register('riderAge', { required: "Age is required", min: { value: 18, message: "Minimum age is 18" } })}
                                         />
+                                        {errors.riderAge && <p className="text-red-500 text-sm mt-1">{errors.riderAge.message}</p>}
                                     </fieldset>
 
                                     <fieldset className="fieldset mt-4">
                                         <legend className="fieldset-legend">Rider District</legend>
                                         <select
-                                            {...register('riderDistrict')}
+                                            {...register('riderDistrict', { required: "District is required" })}
                                             className="select w-full"
+                                            defaultValue=""
                                         >
-                                            <option disabled>Pick a district</option>
+                                            <option value="" disabled>Pick a district</option>
                                             {districtsByRegion(riderRegion).map((d, i) => (
                                                 <option key={i} value={d}>{d}</option>
                                             ))}
                                         </select>
+                                        {errors.riderDistrict && <p className="text-red-500 text-sm mt-1">{errors.riderDistrict.message}</p>}
                                     </fieldset>
                                 </div>
                             </div>

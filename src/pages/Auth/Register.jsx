@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import useTitle from '../../hooks/useTitle';
 import { useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
 import SocialLogin from './SocialLogin/SocialLogin';
@@ -6,8 +7,10 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import axios from 'axios';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { FaUser, FaPlus, FaEye, FaEyeSlash } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 
 const Register = () => {
+    useTitle("Register");
     const {
         register,
         handleSubmit,
@@ -39,7 +42,7 @@ const Register = () => {
                 const formData = new FormData();
                 formData.append('image', profileImg);
 
-                const image_APIURL = `https://api.imgbb.com/1/upload?expiration=600&key=${import.meta.env.VITE_image_host_key}`;
+                const image_APIURL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host_key}`;
 
                 axios.post(image_APIURL, formData).then((res) => {
                     const photoURL = res.data.data.url;
@@ -56,11 +59,33 @@ const Register = () => {
                         displayName: data.name,
                         photoURL,
                     }).then(() => {
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "Registration successful!",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
                         navigate(location.state || '/');
+                    });
+                }).catch(err => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Image Upload Failed",
+                        text: "Could not upload your profile picture. Please try again.",
                     });
                 });
             })
-            .catch((err) => setError(err.message));
+            .catch((err) => {
+                setError(err.message);
+                Swal.fire({
+                    icon: "error",
+                    title: "Registration Failed",
+                    text: err.message.includes('email-already-in-use')
+                        ? "This email is already registered!"
+                        : "Something went wrong! Please try again.",
+                });
+            });
     };
 
     return (
@@ -170,9 +195,14 @@ const Register = () => {
                         </span>
                     </div>
 
-                    {errors.password && (
+                    {errors.password?.type === 'pattern' && (
                         <p className="text-red-500 text-sm">
-                            Strong password required
+                            Password must contain 8 characters, one uppercase, one lowercase, one number and one special character.
+                        </p>
+                    )}
+                    {errors.password?.type === 'required' && (
+                        <p className="text-red-500 text-sm">
+                            Password is required
                         </p>
                     )}
                 </div>

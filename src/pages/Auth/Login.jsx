@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
+import useTitle from '../../hooks/useTitle';
 import { useForm } from 'react-hook-form';
 import useAuth from '../../hooks/useAuth';
 import SocialLogin from './SocialLogin/SocialLogin';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 
 const Login = () => {
+    useTitle("Login");
     const [showPassword, setShowPassword] = useState(false);
     const { register, formState: { errors }, handleSubmit } = useForm();
     const { signInUser } = useAuth();
@@ -13,14 +16,25 @@ const Login = () => {
     const location = useLocation();
 
     const handleLogin = (data) => {
-        console.log('form data', data);
         signInUser(data.email, data.password)
             .then(result => {
-                console.log(result.user);
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Welcome back!",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
                 navigate(`${location.state ? location.state : "/"}`);
             })
             .catch(error => {
-                console.log(error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: error.message.includes('auth/invalid-credential')
+                        ? "Invalid email or password!"
+                        : "Something went wrong! Please try again.",
+                });
             });
     };
 
@@ -51,7 +65,7 @@ const Login = () => {
                         className="input w-full  border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
                     />
                     {errors.email?.type === 'required' && (
-                        <p className="text-red-500">Email is required</p>
+                        <p className="text-red-500 text-sm">Email is required</p>
                     )}
                 </div>
 
@@ -72,8 +86,11 @@ const Login = () => {
                             {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </span>
                     </div>
+                    {errors.password?.type === 'required' && (
+                        <p className="text-red-500 text-sm">Password is required</p>
+                    )}
                     {errors.password?.type === 'minLength' && (
-                        <p className="text-red-500">Password must be 6 characters or longer</p>
+                        <p className="text-red-500 text-sm">Password must be 6 characters or longer</p>
                     )}
                     <Link to="/forgot-password" className="text-black hover:text-primary underline mt-1 cursor-pointer w-fit">Forgot password?</Link>
                 </div>

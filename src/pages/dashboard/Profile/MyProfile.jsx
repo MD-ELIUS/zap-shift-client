@@ -1,12 +1,14 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import useTitle from "../../../hooks/useTitle";
 import Swal from "sweetalert2";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useRole from "../../../hooks/useRole";
 import { FaCamera } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const MyProfile = () => {
+  useTitle("My Profile");
   const { user, updateUserProfile } = useAuth();
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
@@ -15,6 +17,7 @@ const MyProfile = () => {
   const [name, setName] = useState(user?.displayName || "");
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(user?.photoURL);
+  const [errors, setErrors] = useState({});
 
   // 🔹 get role using unified hook
   const { role, roleLoading } = useRole();
@@ -30,6 +33,24 @@ const MyProfile = () => {
 
   // 🔹 update profile
   const handleUpdate = async () => {
+    // Manual Validation
+    const newErrors = {};
+    if (!name.trim()) newErrors.name = "Name is required";
+
+    if (role === 'rider') {
+      if (!modalRiderInfo.riderContact?.trim()) newErrors.riderContact = "Contact is required";
+      if (!modalRiderInfo.riderNID?.trim()) newErrors.riderNID = "NID is required";
+      if (!modalRiderInfo.riderAge?.trim()) newErrors.riderAge = "Age is required";
+      if (!modalRiderInfo.riderRegion?.trim()) newErrors.riderRegion = "Region is required";
+      if (!modalRiderInfo.riderDistrict?.trim()) newErrors.riderDistrict = "District is required";
+      if (!modalRiderInfo.riderLicense?.trim()) newErrors.riderLicense = "License is required";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     try {
       let photoURL = user.photoURL;
 
@@ -128,6 +149,7 @@ const MyProfile = () => {
 
   const openModal = () => {
     setModalRiderInfo({ ...riderInfo });
+    setErrors({});
     setIsOpen(true);
   };
 
@@ -217,9 +239,13 @@ const MyProfile = () => {
                 <input
                   type="text"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="input input-bordered w-full"
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    if (errors.name) setErrors({ ...errors, name: null });
+                  }}
+                  className={`input input-bordered w-full ${errors.name ? 'border-red-500' : ''}`}
                 />
+                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
               </div>
 
               {role === 'rider' && (
@@ -231,9 +257,11 @@ const MyProfile = () => {
                       value={modalRiderInfo.riderContact || ""}
                       onChange={(e) => {
                         setModalRiderInfo({ ...modalRiderInfo, riderContact: e.target.value });
+                        if (errors.riderContact) setErrors({ ...errors, riderContact: null });
                       }}
-                      className="input input-bordered w-full"
+                      className={`input input-bordered w-full ${errors.riderContact ? 'border-red-500' : ''}`}
                     />
+                    {errors.riderContact && <p className="text-red-500 text-xs mt-1">{errors.riderContact}</p>}
                   </div>
                   <div className="form-control">
                     <label className="label"><span className="label-text font-bold">NID</span></label>
@@ -242,9 +270,11 @@ const MyProfile = () => {
                       value={modalRiderInfo.riderNID || ""}
                       onChange={(e) => {
                         setModalRiderInfo({ ...modalRiderInfo, riderNID: e.target.value });
+                        if (errors.riderNID) setErrors({ ...errors, riderNID: null });
                       }}
-                      className="input input-bordered w-full"
+                      className={`input input-bordered w-full ${errors.riderNID ? 'border-red-500' : ''}`}
                     />
+                    {errors.riderNID && <p className="text-red-500 text-xs mt-1">{errors.riderNID}</p>}
                   </div>
                   <div className="form-control">
                     <label className="label"><span className="label-text font-bold">Age</span></label>
@@ -253,9 +283,11 @@ const MyProfile = () => {
                       value={modalRiderInfo.riderAge || ""}
                       onChange={(e) => {
                         setModalRiderInfo({ ...modalRiderInfo, riderAge: e.target.value });
+                        if (errors.riderAge) setErrors({ ...errors, riderAge: null });
                       }}
-                      className="input input-bordered w-full"
+                      className={`input input-bordered w-full ${errors.riderAge ? 'border-red-500' : ''}`}
                     />
+                    {errors.riderAge && <p className="text-red-500 text-xs mt-1">{errors.riderAge}</p>}
                   </div>
                   <div className="form-control">
                     <label className="label"><span className="label-text font-bold">Region</span></label>
@@ -268,14 +300,16 @@ const MyProfile = () => {
                           riderRegion: newRegion,
                           riderDistrict: "" // Reset district when region changes
                         });
+                        if (errors.riderRegion) setErrors({ ...errors, riderRegion: null, riderDistrict: null });
                       }}
-                      className="select select-bordered w-full"
+                      className={`select select-bordered w-full ${errors.riderRegion ? 'border-red-500' : ''}`}
                     >
                       <option value="" disabled>Pick a region</option>
                       {regions.map((r, i) => (
                         <option key={i} value={r}>{r}</option>
                       ))}
                     </select>
+                    {errors.riderRegion && <p className="text-red-500 text-xs mt-1">{errors.riderRegion}</p>}
                   </div>
                   <div className="form-control">
                     <label className="label"><span className="label-text font-bold">District</span></label>
@@ -283,8 +317,9 @@ const MyProfile = () => {
                       value={modalRiderInfo.riderDistrict || ""}
                       onChange={(e) => {
                         setModalRiderInfo({ ...modalRiderInfo, riderDistrict: e.target.value });
+                        if (errors.riderDistrict) setErrors({ ...errors, riderDistrict: null });
                       }}
-                      className="select select-bordered w-full"
+                      className={`select select-bordered w-full ${errors.riderDistrict ? 'border-red-500' : ''}`}
                       disabled={!modalRiderInfo.riderRegion}
                     >
                       <option value="" disabled>Pick a district</option>
@@ -292,6 +327,7 @@ const MyProfile = () => {
                         <option key={i} value={d}>{d}</option>
                       ))}
                     </select>
+                    {errors.riderDistrict && <p className="text-red-500 text-xs mt-1">{errors.riderDistrict}</p>}
                   </div>
                   <div className="form-control">
                     <label className="label"><span className="label-text font-bold">License</span></label>
@@ -300,9 +336,11 @@ const MyProfile = () => {
                       value={modalRiderInfo.riderLicense || ""}
                       onChange={(e) => {
                         setModalRiderInfo({ ...modalRiderInfo, riderLicense: e.target.value });
+                        if (errors.riderLicense) setErrors({ ...errors, riderLicense: null });
                       }}
-                      className="input input-bordered w-full"
+                      className={`input input-bordered w-full ${errors.riderLicense ? 'border-red-500' : ''}`}
                     />
+                    {errors.riderLicense && <p className="text-red-500 text-xs mt-1">{errors.riderLicense}</p>}
                   </div>
                 </>
               )}

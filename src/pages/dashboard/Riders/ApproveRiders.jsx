@@ -1,4 +1,5 @@
 import React from 'react';
+import useTitle from '../../../hooks/useTitle';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import { FaPersonCircleCheck, FaPersonCircleXmark, FaTrashCan } from 'react-icons/fa6';
@@ -6,6 +7,7 @@ import Swal from 'sweetalert2';
 import Loading from '../../../components/Loading/Loading';
 
 const ApproveRiders = () => {
+    useTitle("Approve Riders");
     const axiosSecure = useAxiosSecure();
 
     const [page, setPage] = React.useState(1);

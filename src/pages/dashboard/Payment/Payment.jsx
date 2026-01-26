@@ -1,21 +1,24 @@
 import { useQuery } from '@tanstack/react-query';
+import useTitle from '../../../hooks/useTitle';
 import React from 'react';
 import { useParams } from 'react-router';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import Loading from '../../../components/Loading/Loading';
 
 const Payment = () => {
+    useTitle("Payment");
 
-    const {parcelId} = useParams() ;
-    const axiosSecure = useAxiosSecure() ;
+    const { parcelId } = useParams();
+    const axiosSecure = useAxiosSecure();
     const { isLoading, data: parcel } = useQuery({
         queryKey: ['parcels', parcelId],
         queryFn: async () => {
-             const res = await axiosSecure.get(`/parcels/${parcelId}`) ;
-             return res.data
+            const res = await axiosSecure.get(`/parcels/${parcelId}`);
+            return res.data
         }
     })
 
-    const handlePayment = async() => {
+    const handlePayment = async () => {
         const paymentInfo = {
             cost: parcel.cost,
             parcelId: parcel._id,
@@ -26,14 +29,10 @@ const Payment = () => {
 
         const res = await axiosSecure.post('/payment-checkout-session', paymentInfo)
         console.log(res.data)
-        window.location.href = res.data.url ;
+        window.location.href = res.data.url;
     }
-    if(isLoading) {
-        return  <>
-              <div className="w-16 h-16 border-4 border-dashed rounded-full border-primary border-t-transparent animate-spin mb-6"></div>
-              
-        </>
-
+    if (isLoading) {
+        return <Loading />
     }
 
     return (

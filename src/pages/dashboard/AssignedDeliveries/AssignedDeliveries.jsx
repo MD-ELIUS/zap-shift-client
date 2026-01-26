@@ -1,11 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
+import useTitle from '../../../hooks/useTitle';
 import React from 'react';
 import Swal from 'sweetalert2';
 import useAuth from '../../../hooks/useAuth';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import Loading from '../../../components/Loading/Loading';
+import emailjs from '@emailjs/browser';
 
 const AssignedDeliveries = () => {
+    useTitle("Assigned Deliveries");
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
 
@@ -21,8 +24,6 @@ const AssignedDeliveries = () => {
         keepPreviousData: true
     })
 
-
-
     const parcels = response.results || [];
     const totalCount = response.count || 0;
     const totalPages = Math.ceil(totalCount / limit);
@@ -33,8 +34,6 @@ const AssignedDeliveries = () => {
         if (filterStatus && parcel.deliveryStatus !== filterStatus) return false;
         return true;
     });
-
-
 
     const handleDeliveryStatusUpdate = async (parcel, status) => {
         // এখানে parcel.riderId সবসময় পাঠাতে হবে, তা রিজেক্ট হোক বা ডেলিভারড
@@ -55,6 +54,26 @@ const AssignedDeliveries = () => {
 
             if (res.data.modifiedCount > 0) {
                 refetch();
+
+                // 📧 Send Email Notification
+                const cleanStatus = status.split('_').join(' ').toUpperCase();
+                const templateParams = {
+                    subject: `Parcel Update: ${cleanStatus}`,
+                    to_name: parcel.senderName,
+                    to_email: parcel.senderEmail,
+                    message: `Your parcel (Tracking ID: ${parcel.trackingId}) status has been updated to: ${cleanStatus}.`,
+                    transaction_id: parcel.trackingId,
+                    amount: parcel.cost,
+                    date: new Date().toLocaleDateString()
+                };
+
+                emailjs.send(
+                    import.meta.env.VITE_EMAILJS_SERVICE_ID,
+                    import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+                    templateParams,
+                    import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+                ).catch(err => console.error("EmailJS Error:", err));
+
                 Swal.fire({
                     position: "top-end",
                     icon: "success",

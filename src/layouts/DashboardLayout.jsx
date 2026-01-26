@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, Outlet } from "react-router";
+import useTitle from "../hooks/useTitle";
 import {
   FaHome,
   FaTasks,
@@ -21,14 +22,13 @@ import Loading from "../components/Loading/Loading";
 const NAVBAR_HEIGHT = "64px";
 
 const DashboardLayout = () => {
-  const { logOut, user, loading: authLoading } = useAuth();
-  const { role, roleLoading } = useRole();
+  useTitle("Dashboard");
+  const { logOut, user,  } = useAuth();
+  const { role } = useRole();
   // Sidebar always expanded on Desktop by default
   const [collapsed, setCollapsed] = useState(false);
 
-  if (authLoading || roleLoading) {
-    return <Loading />;
-  }
+
 
   const showText = !collapsed;
 

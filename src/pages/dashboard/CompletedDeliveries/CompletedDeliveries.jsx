@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import useTitle from '../../../hooks/useTitle';
 import useAuth from '../../../hooks/useAuth';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import Loading from '../../../components/Loading/Loading';
 
 const CompletedDeliveries = () => {
+    useTitle("Completed Deliveries");
     const { user } = useAuth();
     const axiosSecure = useAxiosSecure();
     const [searchTerm, setSearchTerm] = useState('');

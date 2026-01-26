@@ -1,9 +1,11 @@
 import React, { useRef } from 'react';
+import useTitle from '../../hooks/useTitle';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useLoaderData } from 'react-router';
 
 const Coverage = () => {
+  useTitle("Coverage");
   const position = [23.6850, 90.3563];
   const serviceCenters = useLoaderData();
   const mapRef = useRef(null);
@@ -69,13 +71,13 @@ const Coverage = () => {
           </div>
         </form>
 
-       
+
       </div>
 
-       {/* Subtitle below input */}
-        <p className="text-secondary text-lg sm:text-xl md:text-2xl font-semibold mt-2 mb-4">
-          We deliver almost all over Bangladesh
-        </p>
+      {/* Subtitle below input */}
+      <p className="text-secondary text-lg sm:text-xl md:text-2xl font-semibold mt-2 mb-4">
+        We deliver almost all over Bangladesh
+      </p>
 
       {/* Map */}
       <div className="w-full h-[400px] sm:h-[450px] md:h-[520px] lg:h-[600px] rounded-xl overflow-hidden">

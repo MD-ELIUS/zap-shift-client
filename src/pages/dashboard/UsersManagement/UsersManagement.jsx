@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import useTitle from '../../../hooks/useTitle';
 import React, { useState } from 'react';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { FaUserShield, FaTrashAlt } from 'react-icons/fa';
@@ -7,6 +8,7 @@ import Swal from 'sweetalert2';
 import Loading from '../../../components/Loading/Loading';
 
 const UsersManagement = () => {
+    useTitle("Users Management");
     const axiosSecure = useAxiosSecure();
     const [searchText, setSearchText] = useState('');
 

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import useTitle from "../hooks/useTitle";
 
 const sections = {
   story: {
@@ -36,6 +37,7 @@ const sections = {
 };
 
 const AboutUs = () => {
+  useTitle("About Us");
   const [active, setActive] = useState("story");
 
   return (
@@ -53,16 +55,16 @@ const AboutUs = () => {
         </p>
 
         {/* Tabs */}
-       <div className="flex gap-5 border-b pb-4 mb-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
+        <div className="flex gap-5 border-b pb-4 mb-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
           {Object.keys(sections).map((key) => (
             <button
               key={key}
               onClick={() => setActive(key)}
-            className={`transition-all whitespace-nowrap
+              className={`transition-all whitespace-nowrap
   text-base sm:text-lg
   ${active === key
-    ? "font-bold text-black"
-    : "text-gray-500 hover:text-black"}
+                  ? "font-bold text-black"
+                  : "text-gray-500 hover:text-black"}
 `}
 
             >

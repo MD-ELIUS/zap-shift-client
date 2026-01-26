@@ -1,10 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
+import useTitle from '../../../hooks/useTitle';
 import React, { useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import Loading from '../../../components/Loading/Loading';
+import emailjs from '@emailjs/browser';
 
 const AssignRiders = () => {
+    useTitle("Assign Riders");
     const [selectedParcel, setSelectedParcel] = useState(null);
     const axiosSecure = useAxiosSecure();
     const riderModalRef = useRef();
@@ -61,6 +64,25 @@ const AssignRiders = () => {
                 if (res.data.modifiedCount) {
                     riderModalRef.current.close();
                     parcelsRefetch();
+
+                    // 📧 Send Email Notification to SENDER
+                    const templateParams = {
+                        subject: `Rider Assigned: ${rider.riderName}`,
+                        to_name: selectedParcel.senderName,
+                        to_email: selectedParcel.senderEmail,
+                        message: `A rider (${rider.riderName}) has been assigned to your parcel (Tracking ID: ${selectedParcel.trackingId}).`,
+                        transaction_id: selectedParcel.trackingId,
+                        amount: selectedParcel.cost,
+                        date: new Date().toLocaleDateString()
+                    };
+
+                    emailjs.send(
+                        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+                        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+                        templateParams,
+                        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+                    ).catch(err => console.error("EmailJS Error:", err));
+
                     Swal.fire({
                         position: "top-end",
                         icon: "success",

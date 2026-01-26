@@ -1,8 +1,10 @@
 import React, { useMemo } from 'react';
+import useTitle from '../hooks/useTitle';
 import { useForm, useWatch } from 'react-hook-form';
 import { useLoaderData } from 'react-router';
 
 const PricingCalculator = () => {
+  useTitle("Pricing Calculator");
 
   /* ===============================
      LOADER DATA (100% SAFE)

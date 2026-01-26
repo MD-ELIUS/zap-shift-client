@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
+import useTitle from '../../../hooks/useTitle';
 import useAuth from '../../../hooks/useAuth';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router';
+import Loading from '../../../components/Loading/Loading';
+import { FaFileDownload } from 'react-icons/fa';
 
 const PaymentHistory = () => {
+  useTitle("Payment History");
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
@@ -22,8 +26,6 @@ const PaymentHistory = () => {
     keepPreviousData: true
   })
 
-
-
   // Handle new response format: { results: [...], count: ... } or fallback to []
   const payments = response.results || [];
   const totalCount = response.count || 0;
@@ -31,6 +33,10 @@ const PaymentHistory = () => {
 
   // Filter now happens on server
   const filteredPayments = payments;
+
+  const handleDownloadInvoice = (payment) => {
+    window.open(`${import.meta.env.VITE_API_URL || 'http://localhost:5205'}/invoices/transaction/${payment.transactionId}`, '_blank');
+  };
 
   return (
     <div className="w-full">
@@ -60,9 +66,7 @@ const PaymentHistory = () => {
 
       {/* Table Container with Shadow and Border */}
       {isLoading || isFetching ? (
-        <div className="flex justify-center items-center h-64">
-          <span className="loading loading-bars loading-lg text-secondary"></span>
-        </div>
+        <Loading />
       ) : (
         <div className="overflow-x-auto shadow-lg rounded-lg border border-base-300">
           <table className="table table-zebra w-full text-center min-w-[800px]">
@@ -75,6 +79,7 @@ const PaymentHistory = () => {
                 <th>Transaction Id</th>
                 <th>Tracking Id</th>
                 <th>Payment Date</th>
+                <th>Invoice</th>
               </tr>
             </thead>
             <tbody>
@@ -95,6 +100,15 @@ const PaymentHistory = () => {
                     </td>
                     <td>
                       {new Date(payment.paidAt).toLocaleDateString()}
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => handleDownloadInvoice(payment)}
+                        className="btn btn-sm btn-ghost text-primary hover:bg-base-200"
+                        title="Download Invoice"
+                      >
+                        <FaFileDownload size={18} />
+                      </button>
                     </td>
                   </tr>
                 ))

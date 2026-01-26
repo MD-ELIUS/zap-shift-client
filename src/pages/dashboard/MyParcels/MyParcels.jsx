@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import useTitle from '../../../hooks/useTitle';
 import React, { useState, useEffect } from 'react';
 import { useLoaderData } from 'react-router';
 import useAuth from '../../../hooks/useAuth';
@@ -11,6 +12,7 @@ import { Link } from 'react-router';
 import Loading from '../../../components/Loading/Loading';
 
 const MyParcels = () => {
+  useTitle("My Parcels");
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const [selectedParcel, setSelectedParcel] = useState(null);
